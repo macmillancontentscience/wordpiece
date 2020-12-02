@@ -18,7 +18,7 @@ Add an upstream remote so you can easily keep up to date with the main repositor
 
 To update your local repo from the main:
 
-    $ git pull upstream master
+    $ git pull upstream main
 
 When you're done making changes, make sure tests pass, and then commit your changes to your personal fork. Then use the GitHub Web UI to create and send the pull request. We'll review and merge the change.
 
