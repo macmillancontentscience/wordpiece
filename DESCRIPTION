@@ -1,0 +1,37 @@
+Package: wordpiece
+Type: Package
+Title: R Implementation of WordPiece Tokenization
+Version: 0.0.1
+Authors@R: c(
+    person(given = "Jonathan",
+           family = "Bratt",
+           role = c("aut", "cre"),
+           email = "jonathan.bratt@macmillan.com",
+           comment = c(ORCID = "0000-0003-2859-0076")),
+    person(given = "Jon",
+           family = "Harmon",
+           role = c("aut"),
+           email = "jonthegeek@gmail.com",
+           comment = c(ORCID = "0000-0003-4781-4346"))
+    )
+Description: Tokenize text using a wordpiece vocabulary.
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/jonathanbratt/wordpiece
+BugReports: https://github.com/jonathanbratt/wordpiece/issues
+Depends: R (>= 3.5.1)
+License: file LICENSE
+RoxygenNote: 7.1.1
+Imports:
+    purrr (>= 0.3.0),
+    rappdirs (>= 0.3.1),
+    stringi (>= 1.2.4),
+    tibble (>= 2.1.3),
+    utils
+Suggests: 
+    testthat (>= 2.1.0),
+    mockery,
+    knitr,
+    rmarkdown,
+    covr
+VignetteBuilder: knitr
