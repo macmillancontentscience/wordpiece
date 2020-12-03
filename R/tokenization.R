@@ -327,7 +327,7 @@ tokenize_word <- function(word, vocab, unk_token = "[UNK]", max_chars = 100) {
 #'
 #' @param char A character scalar, comprising a single unicode character.
 #'
-#' @return TRUE if char is a whitespace character.
+#' @return TRUE if `char` is a whitespace character.
 #'
 #' @keywords internal
 #' @md
@@ -353,7 +353,7 @@ tokenize_word <- function(word, vocab, unk_token = "[UNK]", max_chars = 100) {
 #' as whitespace since they are generally considered as such.
 #' @param char A character scalar, comprising a single unicode character.
 #'
-#' @return TRUE if char is a control character.
+#' @return TRUE if `char` is a control character.
 #'
 #' @keywords internal
 #' @md
@@ -379,7 +379,7 @@ tokenize_word <- function(word, vocab, unk_token = "[UNK]", max_chars = 100) {
 #' consistency.
 #' @param char A character scalar, comprising a single unicode character.
 #'
-#' @return TRUE if char is a punctuation character.
+#' @return TRUE if `char` is a punctuation character.
 #'
 #' @keywords internal
 #' @md

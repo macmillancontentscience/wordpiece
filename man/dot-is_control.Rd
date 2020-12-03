@@ -10,7 +10,7 @@
 \item{char}{A character scalar, comprising a single unicode character.}
 }
 \value{
-TRUE if char is a control character.
+TRUE if \code{char} is a control character.
 }
 \description{
 R implementation of _is_control from BERT: tokenization.py.

@@ -10,7 +10,7 @@
 \item{char}{A character scalar, comprising a single unicode character.}
 }
 \value{
-TRUE if char is a punctuation character.
+TRUE if \code{char} is a punctuation character.
 }
 \description{
 R implementation of _is_punctuation from BERT: tokenization.py.

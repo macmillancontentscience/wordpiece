@@ -10,7 +10,7 @@
 \item{char}{A character scalar, comprising a single unicode character.}
 }
 \value{
-TRUE if char is a whitespace character.
+TRUE if \code{char} is a whitespace character.
 }
 \description{
 R implementation of _is_whitespace from BERT: tokenization.py.
