@@ -33,7 +33,7 @@ convert_to_unicode <- function(text) {
         Encoding(text) <- "UTF-8"
         return(text)
     } else {
-        stop("Unsupported string type.")
+        stop("Unsupported string type.") #nocov
     }
 }
 
@@ -58,7 +58,7 @@ convert_to_unicode <- function(text) {
 load_vocab <- function(vocab_file) {
     token_list <- readLines(vocab_file)
     if (length(token_list) == 0) {
-        return(integer(0))
+        return(integer(0)) #nocov
     }
     token_list <- purrr::map(token_list, function(token) {
         convert_to_unicode(trimws(token))})
@@ -178,7 +178,7 @@ whitespace_tokenize <- function(text) {
                         function(char) {
                             cp <- utf8ToInt(char)
                             if(.is_chinese_char(cp)) {
-                                return(paste0(" ", char, " "))
+                                return(paste0(" ", char, " ")) #nocov
                             }
                             return(char)
                         })
@@ -241,7 +241,7 @@ whitespace_tokenize <- function(text) {
                        function(char) {
                            cp <- utf8ToInt(char)
                            if (cp == 0 | cp == 0xfffd | .is_control(char)) {
-                               return("")
+                               return("") #nocov
                            } else if (.is_whitespace(char)) {
                                return(" ")
                            }
@@ -300,8 +300,8 @@ tokenize_word <- function(word, vocab, unk_token = "[UNK]", max_chars = 100) {
             end <- end - 1
         }
         if (is.na(cur_substr) ) {
-            is_bad <-  TRUE
-            break
+            is_bad <-  TRUE #nocov
+            break           #nocov
         }
 
         sub_tokens <- append(sub_tokens, cur_substr)
@@ -309,7 +309,7 @@ tokenize_word <- function(word, vocab, unk_token = "[UNK]", max_chars = 100) {
     }
 
     if (is_bad) {
-        return(unk_token)
+        return(unk_token) #nocov
     }
     return(sub_tokens)
 }
