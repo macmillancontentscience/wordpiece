@@ -14,7 +14,12 @@ and attached as the "is_cased" attribute.}
 }
 \value{
 The vocab as a named integer vector. Names are tokens in vocabulary,
-  values are integer indices.
+values are integer indices.
+
+Note that from the perspective of a neural net, the numeric indices \emph{are}
+the tokens, and the mapping from token to index is fixed. If we changed the
+indexing, it would break any pre-trained models. This is why the vocabulary
+is stored as a named integer vector, and why it starts with index zero.
 }
 \description{
 Load a vocabulary file

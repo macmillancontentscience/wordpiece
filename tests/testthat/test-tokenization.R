@@ -13,9 +13,9 @@
 # limitations under the License.
 
 
-test_that("whitespace_tokenize splits a string on whitespace", {
+test_that(".whitespace_tokenize splits a string on whitespace", {
     test_string <- " some\ttext\nwith whitespace "
-    test_result <- whitespace_tokenize(test_string)
+    test_result <- .whitespace_tokenize(test_string)
     expected_result <- c("some", "text", "with", "whitespace")
     testthat::expect_identical(test_result, expected_result)
 })
@@ -68,10 +68,10 @@ test_that(".is_control correctly classifies characters", {
     testthat::expect_false(.is_control("\r"))
 })
 
-test_that(".is_chinese_char correctly classifies characters", {
-    testthat::expect_true(.is_chinese_char(utf8ToInt("力")))
+test_that(".is_chinese_char_cp correctly classifies character codepoints", {
+    testthat::expect_true(.is_chinese_char_cp(utf8ToInt("力")))
 
-    testthat::expect_false(.is_chinese_char(utf8ToInt("A")))
+    testthat::expect_false(.is_chinese_char_cp(utf8ToInt("A")))
 })
 
 test_that(".is_punctuation correctly classifies characters", {
@@ -85,26 +85,26 @@ test_that(".is_punctuation correctly classifies characters", {
     testthat::expect_false(.is_punctuation(" "))
 })
 
-test_that("tokenize_single_sequence works as expected.", {
+test_that("wordpiece_tokenize works as expected.", {
     # vocab <- load_vocab(vocab_file = "tests/testthat/vocab.txt")
     vocab <- load_vocab(vocab_file = "vocab.txt")
 
     text <- "I love tacos!"
     expected_result <- c(2, 3, 4, 1)
     names(expected_result) <- c("i", "love", "tacos", "!")
-    test_result <- tokenize_single_sequence(text = text, vocab = vocab)
+    test_result <- wordpiece_tokenize(text = text, vocab = vocab)
     testthat::expect_identical(test_result, expected_result)
 
     text <- "I love apples!"
     expected_result <- c(2, 3, 5, 6, 1)
     names(expected_result) <- c("i", "love", "app", "##les", "!")
-    test_result <- tokenize_single_sequence(text = text, vocab = vocab)
+    test_result <- wordpiece_tokenize(text = text, vocab = vocab)
     testthat::expect_identical(test_result, expected_result)
 
     text <- "I love oranges!"
     expected_result <- c(2, 3, 7, 1)
     names(expected_result) <- c("i", "love", "[UNK]", "!")
-    test_result <- tokenize_single_sequence(text = text,
+    test_result <- wordpiece_tokenize(text = text,
                                             vocab = vocab,
                                             max_chars = 5)
     testthat::expect_identical(test_result, expected_result)
