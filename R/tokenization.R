@@ -12,5 +12,89 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# load_vocab --------------------------------------------------------------
 
-# tokenize... ----------------------------------------
+
+#' Load a vocabulary file
+#'
+#' @param vocab_file path to vocabulary file. File is assumed to be a text file,
+#'   with one token per line, with the line number corresponding to the index of
+#'   that token in the vocabulary. The casedness of the vocabulary is inferred
+#'   and attached as the "is_cased" attribute.
+#'
+#' @return The vocab as a named integer vector. Names are tokens in vocabulary,
+#'   values are integer indices.
+#'
+#'   Note that from the perspective of a neural net, the numeric indices *are*
+#'   the tokens, and the mapping from token to index is fixed. If we changed the
+#'   indexing, it would break any pre-trained models. This is why the vocabulary
+#'   is stored as a named integer vector, and why it starts with index zero.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{ vocab <- load_vocab(vocab_file = "vocab.txt") }
+load_vocab <- function(vocab_file) {
+  token_list <- readLines(vocab_file)
+  if (length(token_list) == 0) {
+    return(integer(0)) #nocov
+  }
+  token_list <- purrr::map(token_list, function(token) {
+    .convert_to_unicode(trimws(token))})
+  # The vocab is zero-indexed, and we need to preserve that indexing.
+  index_list <- seq_along(token_list) - 1
+  names(index_list) <- token_list
+  # determine casedness of vocab and attach as attribute
+  attr(index_list, "is_cased") <- .infer_case_from_vocab(index_list)
+  return(index_list)
+}
+
+
+# wordpiece_tokenize ----------------------------------------------------
+
+#' Tokenize Sequence with Word Pieces
+#'
+#' Given a single sequence of text and a wordpiece vocabulary, tokenizes the
+#' text.
+#'
+#' @inheritParams .tokenize_word
+#' @param text Character scalar; text to tokenize.
+#'
+#' @return A named integer vector, giving the tokenization of the input
+#'   sequence. The integers values are the token ids, and the names are the
+#'   tokens.
+#' @export
+#'
+#' @examples
+#' vocab <- c("i" = 0, "love" = 1, "ta" = 2, "##cos" = 3, "!" = 4)
+#' attr(vocab, "is_cased") <- FALSE
+#' tokens <- wordpiece_tokenize(
+#'   text = "I love tacos!",
+#'   vocab = vocab
+#' )
+wordpiece_tokenize <- function(text,
+                               vocab,
+                               unk_token = "[UNK]",
+                               max_chars = 100) {
+  is_cased <- attr(vocab, "is_cased")
+  if (!is_cased) {
+    text <- tolower(text)
+  }
+
+  text <- .convert_to_unicode(text)
+  text <- .clean_text(text)
+  text <- .tokenize_chinese_chars(text)
+  text <- .strip_accents(text)
+  text <- .split_on_punc(text)
+  text <- purrr::map(.whitespace_tokenize(text),
+                     .f = .tokenize_word,
+                     vocab = vocab,
+                     unk_token = unk_token,
+                     max_chars = max_chars)
+  text <- unlist(text)
+  ids <- vocab[text]
+  names(ids) <- text
+  return(ids)
+}
+
+

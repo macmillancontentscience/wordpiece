@@ -1,0 +1,8 @@
+[PAD]
+!
+i
+love
+tacos
+app
+##les
+[UNK]
