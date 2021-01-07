@@ -3,4 +3,5 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^CONTRIBUTING\.md$
-^Contributor_Code_of_Conduct\.md$
+^CODE_OF_CONDUCT\.md$
+^\.github$
