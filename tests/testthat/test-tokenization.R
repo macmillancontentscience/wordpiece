@@ -86,8 +86,9 @@ test_that(".is_punctuation correctly classifies characters", {
 })
 
 test_that("wordpiece_tokenize works as expected.", {
-  # vocab <- load_vocab(vocab_file = "tests/testthat/vocab.txt")
-  vocab <- load_vocab(vocab_file = "vocab.txt")
+  # vocab <- load_or_retrieve_vocab(vocab_file = "tests/testthat/vocab.txt")
+  vocab <- load_or_retrieve_vocab(vocab_file = "vocab.txt")
+  testthat::expect_false(attr(vocab, "is_cased"))
 
   text <- "I love tacos!"
   expected_result <- c(2, 3, 4, 1)

@@ -13,6 +13,22 @@
 # limitations under the License.
 
 
+# %||% ---------------------------------------------------------------------
+
+#' Default value for `NULL`
+#'
+#' Mostly copied from rlang package.
+#'
+#' @param x,y If `x` is NULL, will return `y`; otherwise returns `x`.
+#' @export
+#' @name op-null-default
+#' @examples
+#' 1 %||% 2
+#' NULL %||% 2
+`%||%` <- function(x, y) {
+  if (is.null(x)) y else x # nocov
+}
+
 # .convert_to_unicode ------------------------------------------------------
 
 
@@ -429,8 +445,23 @@
 #' @keywords internal
 .make_cache_filename <- function(vocab_file) {
   just_name <- basename(vocab_file)
-  path_hash <- digest::digest(dirname(vocab_file), algo = "xxhash32")
+  dirpath <- normalizePath(dirname(vocab_file))
+  path_hash <- digest::digest(dirpath, algo = "xxhash32")
   return(paste(just_name, path_hash, "rds", sep = "."))
 }
 
+
+
+# get_cache_dir --------------------------------------------------
+
+#' Retrieve Directory for vocabulary Cache
+#'
+#' @return A unique filename to use for cacheing the vocabulary.
+#' @export
+get_cache_dir <- function() {
+  return(
+      getOption("wordpiece.dir") %||%
+      rappdirs::user_cache_dir(appname = "wordpiece")
+  )
+}
 

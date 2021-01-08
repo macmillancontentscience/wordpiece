@@ -37,6 +37,7 @@
 load_vocab <- function(vocab_file) {
   token_list <- readLines(vocab_file)
   if (length(token_list) == 0) {
+    # https://github.com/jonathanbratt/wordpiece/issues/9
     return(integer(0)) #nocov
   }
   token_list <- purrr::map(token_list, function(token) {
@@ -46,6 +47,7 @@ load_vocab <- function(vocab_file) {
   names(index_list) <- token_list
   # determine casedness of vocab and attach as attribute
   attr(index_list, "is_cased") <- .infer_case_from_vocab(index_list)
+  # https://github.com/jonathanbratt/wordpiece/issues/10
   return(index_list)
 }
 
@@ -60,7 +62,7 @@ load_vocab <- function(vocab_file) {
 #'   from the specified cache location, or, if not found there, will ask to save
 #'   the vocabulary as an .rds file.
 #' @param cache_dir Character; the path to a cache directory (defaults to
-#'   `rappdirs::user_cache_dir()`).
+#'   location returned by `get_cache_dir()`).
 #'
 #' @return The vocab as a named integer vector. Names are tokens in vocabulary,
 #'   values are integer indices. The casedness of the vocabulary is inferred
@@ -77,11 +79,11 @@ load_vocab <- function(vocab_file) {
 #' \dontrun{ vocab <- load_vocab(vocab_file = "vocab.txt") }
 load_or_retrieve_vocab <- function(vocab_file,
                                    use_cache = TRUE,
-                                   cache_dir = rappdirs::user_cache_dir()) {
+                                   cache_dir = get_cache_dir()) {
   if (use_cache) {
     cache_filepath <- file.path(cache_dir, .make_cache_filename(vocab_file))
     if (file.exists(cache_filepath)) {
-      return(readRDS(cache_filepath))
+      return(readRDS(cache_filepath)) # nocov
     }
   }
   # Guess we have to load the vocab from text file.

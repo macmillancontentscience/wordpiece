@@ -7,7 +7,7 @@
 load_or_retrieve_vocab(
   vocab_file,
   use_cache = TRUE,
-  cache_dir = rappdirs::user_cache_dir()
+  cache_dir = get_cache_dir()
 )
 }
 \arguments{
@@ -20,7 +20,7 @@ from the specified cache location, or, if not found there, will ask to save
 the vocabulary as an .rds file.}
 
 \item{cache_dir}{Character; the path to a cache directory (defaults to
-\code{rappdirs::user_cache_dir()}).}
+location returned by \code{get_cache_dir()}).}
 }
 \value{
 The vocab as a named integer vector. Names are tokens in vocabulary,
