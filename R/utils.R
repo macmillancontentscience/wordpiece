@@ -1,4 +1,4 @@
-# Copyright 2020 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
+# Copyright 2021 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -412,6 +412,25 @@
 .infer_case_from_vocab <- function(vocab) {
   is_cased <- any(grepl(pattern = "^[A-Z]", names(vocab)))
   return(is_cased)
+}
+
+
+
+# .make_cache_filename --------------------------------------------------
+
+#' Construct Cache File Name
+#'
+#' Given the path to a vocabulary file, construct a unique filename using the
+#' hash of the path.
+#'
+#' @inheritParams load_vocab
+#' @return A unique filename to use for cacheing the vocabulary.
+#'
+#' @keywords internal
+.make_cache_filename <- function(vocab_file) {
+  just_name <- basename(vocab_file)
+  path_hash <- digest::digest(dirname(vocab_file), algo = "xxhash32")
+  return(paste(just_name, path_hash, "rds", sep = "."))
 }
 
 
