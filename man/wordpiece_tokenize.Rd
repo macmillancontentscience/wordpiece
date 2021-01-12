@@ -25,8 +25,9 @@ Given a single sequence of text and a wordpiece vocabulary, tokenizes the
 text.
 }
 \examples{
-vocab <- c("i" = 0, "love" = 1, "ta" = 2, "##cos" = 3, "!" = 4)
-attr(vocab, "is_cased") <- FALSE
+# Get path to sample vocabulary included with package.
+vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
+vocab <- load_or_retrieve_vocab(vocab_file = vocab_path, use_cache = FALSE)
 tokens <- wordpiece_tokenize(
   text = "I love tacos!",
   vocab = vocab

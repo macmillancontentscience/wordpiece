@@ -25,5 +25,7 @@ is stored as a named integer vector, and why it starts with index zero.
 Load a vocabulary file
 }
 \examples{
-\dontrun{ vocab <- load_vocab(vocab_file = "vocab.txt") }
+# Get path to sample vocabulary included with package.
+vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
+vocab <- load_vocab(vocab_file = vocab_path)
 }
