@@ -1,4 +1,4 @@
-# Copyright 2020 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
+# Copyright 2021 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+# %||% ---------------------------------------------------------------------
+
+#' Default value for `NULL`
+#'
+#' Mostly copied from rlang package.
+#'
+#' @param x,y If `x` is NULL, will return `y`; otherwise returns `x`.
+#' @keywords internal
+#' @name op-null-default
+`%||%` <- function(x, y) {
+  if (is.null(x)) y else x # nocov
+}
 
 # .convert_to_unicode ------------------------------------------------------
 
@@ -414,4 +427,37 @@
   return(is_cased)
 }
 
+
+
+# .make_cache_filename --------------------------------------------------
+
+#' Construct Cache File Name
+#'
+#' Given the path to a vocabulary file, construct a unique filename using the
+#' hash of the path.
+#'
+#' @inheritParams load_vocab
+#' @return A unique filename to use for cacheing the vocabulary.
+#'
+#' @keywords internal
+.make_cache_filename <- function(vocab_file) {
+  just_name <- basename(vocab_file)
+  dirpath <- normalizePath(dirname(vocab_file))
+  path_hash <- digest::digest(dirpath, algo = "xxhash32")
+  return(paste(just_name, path_hash, "rds", sep = "."))
+}
+
+
+# get_cache_dir --------------------------------------------------
+
+#' Retrieve Directory for vocabulary Cache
+#'
+#' @return A unique filename to use for cacheing the vocabulary.
+#' @export
+get_cache_dir <- function() {
+  return(
+      getOption("wordpiece.dir") %||%
+      rappdirs::user_cache_dir(appname = "wordpiece")
+  )
+}
 

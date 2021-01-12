@@ -1,4 +1,4 @@
-# Copyright 2020 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
+# Copyright 2021 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@
 #'
 #' @param vocab_file path to vocabulary file. File is assumed to be a text file,
 #'   with one token per line, with the line number corresponding to the index of
-#'   that token in the vocabulary. The casedness of the vocabulary is inferred
-#'   and attached as the "is_cased" attribute.
+#'   that token in the vocabulary.
 #'
 #' @return The vocab as a named integer vector. Names are tokens in vocabulary,
-#'   values are integer indices.
+#'   values are integer indices. The casedness of the vocabulary is inferred
+#'   and attached as the "is_cased" attribute.
 #'
 #'   Note that from the perspective of a neural net, the numeric indices *are*
 #'   the tokens, and the mapping from token to index is fixed. If we changed the
@@ -37,6 +37,7 @@
 load_vocab <- function(vocab_file) {
   token_list <- readLines(vocab_file)
   if (length(token_list) == 0) {
+    # https://github.com/jonathanbratt/wordpiece/issues/9
     return(integer(0)) #nocov
   }
   token_list <- purrr::map(token_list, function(token) {
@@ -46,9 +47,59 @@ load_vocab <- function(vocab_file) {
   names(index_list) <- token_list
   # determine casedness of vocab and attach as attribute
   attr(index_list, "is_cased") <- .infer_case_from_vocab(index_list)
+  # https://github.com/jonathanbratt/wordpiece/issues/10
   return(index_list)
 }
 
+
+# load_or_retrieve_vocab ------------------------------------------------------
+
+
+#' Load a vocabulary file, or retrieve from cache
+#'
+#' @inheritParams load_vocab
+#' @param use_cache Logical; if TRUE, will attempt to retrieve the vocabulary
+#'   from the specified cache location, or, if not found there, will ask to save
+#'   the vocabulary as an .rds file.
+#' @param cache_dir Character; the path to a cache directory (defaults to
+#'   location returned by `get_cache_dir()`).
+#'
+#' @return The vocab as a named integer vector. Names are tokens in vocabulary,
+#'   values are integer indices. The casedness of the vocabulary is inferred
+#'   and attached as the "is_cased" attribute.
+#'
+#'   Note that from the perspective of a neural net, the numeric indices *are*
+#'   the tokens, and the mapping from token to index is fixed. If we changed the
+#'   indexing, it would break any pre-trained models. This is why the vocabulary
+#'   is stored as a named integer vector, and why it starts with index zero.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{ vocab <- load_vocab(vocab_file = "vocab.txt") }
+load_or_retrieve_vocab <- function(vocab_file,
+                                   use_cache = TRUE,
+                                   cache_dir = get_cache_dir()) {
+  if (use_cache) {
+    cache_filepath <- file.path(cache_dir, .make_cache_filename(vocab_file))
+    if (file.exists(cache_filepath)) {
+      return(readRDS(cache_filepath)) # nocov
+    }
+  }
+  # Guess we have to load the vocab from text file.
+  vocab <- load_vocab(vocab_file)
+
+  if (use_cache) { # nocov start
+    # ask for permission to write to cache
+    if (interactive()) {
+      if (isTRUE(utils::askYesNo(paste0("Cache vocabulary at ",
+                                        cache_filepath, "?")))) {
+        saveRDS(vocab, cache_filepath)
+      }
+    }
+  } # nocov end
+  return(vocab)
+}
 
 # wordpiece_tokenize ----------------------------------------------------
 
