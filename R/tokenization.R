@@ -94,6 +94,10 @@ load_or_retrieve_vocab <- function(vocab_file,
     if (interactive()) {
       if (isTRUE(utils::askYesNo(paste0("Cache vocabulary at ",
                                         cache_filepath, "?")))) {
+        # make sure that the directory exists
+        if (!dir.exists(cache_dir)) {
+          dir.create(path = cache_dir, recursive = TRUE)
+        }
         saveRDS(vocab, cache_filepath)
       }
     }
