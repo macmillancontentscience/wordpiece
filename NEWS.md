@@ -1,3 +1,11 @@
+# wordpiece 0.0.4
+
+* Added basic usage vignette.
+
+# wordpiece 0.0.3
+
+* Enabled cache option to speed up vocabulary loading.
+
 # wordpiece 0.0.1
 
 * Added a `NEWS.md` file to track changes to the package.

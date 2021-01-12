@@ -1,0 +1,134 @@
+---
+title: "Using wordpiece"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using wordpiece}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!-- 
+Copyright 2021 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This package applies [WordPiece](https://arxiv.org/pdf/1609.08144v2.pdf) 
+tokenization to input text, given an appropriate WordPiece vocabulary. 
+Currently, the [BERT](https://arxiv.org/pdf/1810.04805.pdf) tokenization 
+conventions are used. The basic tokenization algorithm is:
+
+ - Put spaces around punctuation.
+ - For each resulting word, if the word is found in the WordPiece vocabulary,
+ keep it as-is. If not, starting from the beginning, pull off the biggest piece
+ that *is* in the vocabulary, and prefix "##" to the remaining piece. Repeat
+ until the entire word is represented by pieces from the vocabulary, if
+ possible.
+ - If the word can't be represented by vocabulary pieces, or if it exceeds a 
+ certain length, replace it with a specified "unknown" token.
+ 
+ Ideally, a WordPiece vocabulary will be complete enough to represent any word,
+but this is not required. 
+ 
+### Loading a Vocabulary
+ 
+The vocabulary is represented by the package as a named integer vector, with a
+logical attribute `is_cased` to indicate whether the vocabulary is case
+sensitive. The names are the actual tokens, and the integer values are the token
+indices (this would be the input to a BERT model, for example).
+
+A vocabulary can be read from a text file containing a single token per line.
+The token index is taken to be the line number, *starting from zero*. These
+conventions are adopted for compatibility with the vocabulary and file format
+used in the pretrained BERT checkpoints released by Google Research. The
+casedness of the vocabulary is inferred from the content of the vocabulary. 
+
+When a text vocabulary is loaded in an interactive R session, the option is
+given to cache the vocabulary as an RDS file for faster future loading.
+
+
+```{r example0}
+library(wordpiece)
+# Get path to sample vocabulary included with package.
+vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
+
+# Load the vocabulary.
+vocab <- load_or_retrieve_vocab(vocab_path, use_cache = FALSE)
+
+# Take a peek at the vocabulary.
+head(vocab)
+```
+
+### Tokenizing Text
+
+Tokenize text by calling `wordpiece_tokenize` on the text, passing the
+vocabulary as the `vocab` parameter.  The output of `wordpiece_tokenize` is a
+named integer vector of token indices.
+
+```{r example1}
+# Now tokenize some text!
+wordpiece_tokenize(text = "I love tacos, apples, and tea!", vocab = vocab)
+```
+
+### Vocabulary Case
+
+The above vocabulary contained no tokens starting with an uppercase letter, so
+it was assumed to be uncased. When tokenizing text with an uncased vocabulary,
+the input is converted to lowercase before any other processing is applied. If
+the vocabulary contains at least one capitalized token, it will be taken as
+case-sensitive, and the case of the input text is preserved. Note that in a
+cased vocabulary, capitalized and uncapitalized versions of the same word are
+different tokens, and must *both* be included in the vocabulary to be
+recognized.
+
+```{r example2}
+# The above vocabulary was uncased.
+attr(vocab, "is_cased")
+
+# Here is the same vocabulary, but containing the capitalized token "Hi".
+vocab_path2 <- system.file("extdata", "tiny_vocab_cased.txt", 
+                           package = "wordpiece")
+vocab_cased <- load_or_retrieve_vocab(vocab_path2, use_cache = FALSE)
+head(vocab_cased)
+
+# vocab_cased is inferred to be case-sensitive...
+attr(vocab_cased, "is_cased")
+
+# ... so the tokenization will *not* convert strings to lowercase, and so the
+# words "I" and "And" are not found in the vocabulary (though "and" still is).
+wordpiece_tokenize(text = "And I love tacos and salsa!", vocab = vocab_cased)
+```
+
+### Representing "Unknown" Tokens
+
+Note that the default value for the `unk_token` argument, "[UNK]", is present in
+the above vocabularies, so it had an integer index in the tokenization. If that
+token were not in the vocabulary, its index would be coded as `NA`.
+
+```{r example3}
+
+wordpiece_tokenize(text = "I love tacos!", 
+                   vocab = vocab_cased, 
+                   unk_token = "[missing]")
+```
+
+The package defaults are set to be compatible with BERT tokenization. If you
+have a different use case, be sure to check all parameter values.
