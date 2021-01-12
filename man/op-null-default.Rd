@@ -13,7 +13,4 @@ x \%||\% y
 \description{
 Mostly copied from rlang package.
 }
-\examples{
-1 \%||\% 2
-NULL \%||\% 2
-}
+\keyword{internal}

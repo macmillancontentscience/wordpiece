@@ -20,11 +20,8 @@
 #' Mostly copied from rlang package.
 #'
 #' @param x,y If `x` is NULL, will return `y`; otherwise returns `x`.
-#' @export
+#' @keywords internal
 #' @name op-null-default
-#' @examples
-#' 1 %||% 2
-#' NULL %||% 2
 `%||%` <- function(x, y) {
   if (is.null(x)) y else x # nocov
 }
@@ -449,7 +446,6 @@
   path_hash <- digest::digest(dirpath, algo = "xxhash32")
   return(paste(just_name, path_hash, "rds", sep = "."))
 }
-
 
 
 # get_cache_dir --------------------------------------------------
