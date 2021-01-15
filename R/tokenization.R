@@ -38,19 +38,16 @@
 #' vocab <- load_vocab(vocab_file = vocab_path)
 load_vocab <- function(vocab_file) {
   token_list <- readLines(vocab_file)
-  if (length(token_list) == 0) {
-    # https://github.com/jonathanbratt/wordpiece/issues/9
-    return(integer(0)) #nocov
-  }
   token_list <- purrr::map(token_list, function(token) {
     .convert_to_unicode(trimws(token))})
   # The vocab is zero-indexed, and we need to preserve that indexing.
   index_list <- seq_along(token_list) - 1
   names(index_list) <- token_list
-  # determine casedness of vocab and attach as attribute
-  attr(index_list, "is_cased") <- .infer_case_from_vocab(index_list)
-  # https://github.com/jonathanbratt/wordpiece/issues/10
-  return(index_list)
+  # determine casedness of vocab
+  is_cased <- .infer_case_from_vocab(index_list)
+  vocab <- .new_wordpiece_vocabulary(index_list, is_cased)
+  .validate_wordpiece_vocabulary(vocab)
+  return(vocab)
 }
 
 
