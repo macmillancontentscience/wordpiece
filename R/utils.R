@@ -452,7 +452,8 @@
 #' Validator for Objects of Class wordpiece_vocabulary
 #'
 #' @param vocab wordpiece_vocabulary object to validate
-#' @return \code{vocab} if the object passes the checks. Otherwise, abort with message.
+#' @return \code{vocab} if the object passes the checks. Otherwise, abort with
+#'   message.
 #'
 #' @keywords internal
 .validate_wordpiece_vocabulary <- function(vocab) {

@@ -10,7 +10,8 @@
 \item{vocab}{wordpiece_vocabulary object to validate}
 }
 \value{
-TRUE if the object passes the checks. Otherwise, abort with message.
+\code{vocab} if the object passes the checks. Otherwise, abort with
+message.
 }
 \description{
 Validator for Objects of Class wordpiece_vocabulary

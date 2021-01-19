@@ -46,8 +46,7 @@ load_vocab <- function(vocab_file) {
   # determine casedness of vocab
   is_cased <- .infer_case_from_vocab(index_list)
   vocab <- .new_wordpiece_vocabulary(index_list, is_cased)
-  .validate_wordpiece_vocabulary(vocab)
-  return(vocab)
+  return(.validate_wordpiece_vocabulary(vocab))
 }
 
 
