@@ -466,7 +466,7 @@
   if (any(grepl("\\s", tokens))) {
     stop("Whitespace found in vocabulary tokens.")
   }
-  return(TRUE)
+  return(vocab)
 }
 
 # .make_cache_filename --------------------------------------------------
@@ -500,4 +500,3 @@ get_cache_dir <- function() {
       rappdirs::user_cache_dir(appname = "wordpiece")
   )
 }
-
