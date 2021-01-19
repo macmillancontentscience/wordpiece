@@ -1,0 +1,8 @@
+[PAD]
+!
+i
+love
+ta cos
+app
+##les
+[UNK]

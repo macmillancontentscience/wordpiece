@@ -429,6 +429,47 @@
 
 
 
+# .new_wordpiece_vocabulary --------------------------------------------------
+
+#' Constructor for Class wordpiece_vocabulary
+#'
+#' @param vocab Named integer vector; the "actual" vocabulary.
+#' @param is_cased Logical; whether the vocabulary is cased.
+#' @return The vocabulary with `is_cased` attached as an attribute, and the
+#'   class `wordpiece_vocabulary` applied.
+#'
+#' @keywords internal
+.new_wordpiece_vocabulary <- function(vocab, is_cased) {
+  return(structure(vocab,
+                   "is_cased" = is_cased,
+                   class = c("wordpiece_vocabulary", "integer")))
+}
+
+
+
+# .validate_wordpiece_vocabulary ----------------------------------------------
+
+#' Validator for Objects of Class wordpiece_vocabulary
+#'
+#' @param vocab wordpiece_vocabulary object to validate
+#' @return \code{vocab} if the object passes the checks. Otherwise, abort with
+#'   message.
+#'
+#' @keywords internal
+.validate_wordpiece_vocabulary <- function(vocab) {
+  if (length(vocab) == 0) {
+    stop("Empty vocabulary.")
+  }
+  tokens <- names(vocab)
+  if (anyDuplicated(tokens) > 0) {
+    stop("Duplicate tokens found in vocabulary.")
+  }
+  if (any(grepl("\\s", tokens))) {
+    stop("Whitespace found in vocabulary tokens.")
+  }
+  return(vocab)
+}
+
 # .make_cache_filename --------------------------------------------------
 
 #' Construct Cache File Name
@@ -460,4 +501,3 @@ get_cache_dir <- function() {
       rappdirs::user_cache_dir(appname = "wordpiece")
   )
 }
-

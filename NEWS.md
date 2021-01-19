@@ -1,3 +1,7 @@
+# wordpiece 0.0.5
+
+* Added vocabulary class + validation. (#9, #10, @jonathanbratt)
+
 # wordpiece 0.0.4
 
 * Added basic usage vignette.

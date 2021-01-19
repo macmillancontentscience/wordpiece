@@ -1,4 +1,4 @@
-# Copyright 2020 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
+# Copyright 2021 Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -85,10 +85,21 @@ test_that(".is_punctuation correctly classifies characters", {
   testthat::expect_false(.is_punctuation(" "))
 })
 
+test_that("bad vocabularies are flagged", {
+  # badvocabfile <- "tests/testthat/badvocab_spaces.txt"
+  badvocabfile <- "badvocab_spaces.txt"
+  testthat::expect_error(load_or_retrieve_vocab(badvocabfile), "Whitespace")
+  badvocabfile <- "badvocab_dupes.txt"
+  testthat::expect_error(load_or_retrieve_vocab(badvocabfile), "Duplicate")
+  badvocabfile <- "empty_vocab.txt"
+  testthat::expect_error(load_or_retrieve_vocab(badvocabfile), "Empty")
+})
+
 test_that("wordpiece_tokenize works as expected.", {
   # vocab <- load_or_retrieve_vocab(vocab_file = "tests/testthat/vocab.txt")
   vocab <- load_or_retrieve_vocab(vocab_file = "vocab.txt")
   testthat::expect_false(attr(vocab, "is_cased"))
+  testthat::expect_is(vocab, "wordpiece_vocabulary")
 
   text <- "I love tacos!"
   expected_result <- c(2, 3, 4, 1)
