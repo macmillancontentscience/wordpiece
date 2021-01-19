@@ -1,3 +1,7 @@
+# wordpiece 0.0.6
+
+* Oops, make tiny sample vocab compatible with RBERT (@jonathanbratt)
+
 # wordpiece 0.0.5
 
 * Added vocabulary class + validation. (#9, #10, @jonathanbratt)
