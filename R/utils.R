@@ -57,9 +57,6 @@
 #' @param text Character scalar to tokenize.
 #'
 #' @return Character vector of tokens, split on whitespace.
-#'
-#' @examples
-#' wordpiece:::.whitespace_tokenize(text = " some\ttext \n with  whitespace ")
 #' @keywords internal
 .whitespace_tokenize <- function(text) {
   return(
@@ -246,10 +243,6 @@
 #' @param max_chars Maximum length of word recognized.
 #'
 #' @return Input word as a list of tokens.
-#'
-#' @examples
-#' wordpiece:::.tokenize_word("unknown", vocab = c("un" = 0, "##known" = 1))
-#' wordpiece:::.tokenize_word("known", vocab = c("un" = 0, "##known" = 1))
 #' @keywords internal
 .tokenize_word <- function(word, vocab, unk_token = "[UNK]", max_chars = 100) {
   vocab <- names(vocab)

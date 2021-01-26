@@ -23,8 +23,4 @@ Tokenize a single "word" (no whitespace). The word can technically contain
 punctuation, but in BERT's tokenization, punctuation has been split out by
 this point.
 }
-\examples{
-wordpiece:::.tokenize_word("unknown", vocab = c("un" = 0, "##known" = 1))
-wordpiece:::.tokenize_word("known", vocab = c("un" = 0, "##known" = 1))
-}
 \keyword{internal}
