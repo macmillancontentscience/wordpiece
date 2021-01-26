@@ -12,7 +12,9 @@ Authors@R: c(
            family = "Harmon",
            role = c("aut"),
            email = "jonthegeek@gmail.com",
-           comment = c(ORCID = "0000-0003-4781-4346"))
+           comment = c(ORCID = "0000-0003-4781-4346")),
+    person(family = "Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning", 
+           role = c("cph"))
     )
 Description: Apply 'Wordpiece' (<arXiv:1609.08144>) tokenization to input text, 
  given an appropriate vocabulary. The 'BERT' (<arXiv:1810.04805>) tokenization 
