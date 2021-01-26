@@ -1,4 +1,4 @@
-# wordpiece 0.0.7
+# wordpiece 1.0.0
 
 * Get ready for CRAN (@jonathanbratt)
 

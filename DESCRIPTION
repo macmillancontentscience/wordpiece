@@ -1,7 +1,7 @@
 Package: wordpiece
 Type: Package
 Title: R Implementation of Wordpiece Tokenization
-Version: 0.0.7
+Version: 1.0.0
 Authors@R: c(
     person(given = "Jonathan",
            family = "Bratt",
