@@ -1,7 +1,7 @@
 Package: wordpiece
 Type: Package
 Title: R Implementation of WordPiece Tokenization
-Version: 0.0.6
+Version: 0.0.7
 Authors@R: c(
     person(given = "Jonathan",
            family = "Bratt",
@@ -14,12 +14,14 @@ Authors@R: c(
            email = "jonthegeek@gmail.com",
            comment = c(ORCID = "0000-0003-4781-4346"))
     )
-Description: Tokenize text using a wordpiece vocabulary.
+Description: Apply WordPiece (<arXiv:1609.08144v2>) tokenization to input text, 
+ given an appropriate vocabulary. The 'BERT' (<arXiv:1810.04805>) tokenization 
+ conventions are used by default.
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jonathanbratt/wordpiece
 BugReports: https://github.com/jonathanbratt/wordpiece/issues
-Depends: R (>= 3.5.1)
+Depends: R (>= 3.5.0)
 License: Apache License (>= 2)
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
