@@ -1,6 +1,6 @@
 Package: wordpiece
 Type: Package
-Title: R Implementation of WordPiece Tokenization
+Title: R Implementation of Wordpiece Tokenization
 Version: 0.0.7
 Authors@R: c(
     person(given = "Jonathan",
@@ -14,7 +14,7 @@ Authors@R: c(
            email = "jonthegeek@gmail.com",
            comment = c(ORCID = "0000-0003-4781-4346"))
     )
-Description: Apply WordPiece (<arXiv:1609.08144v2>) tokenization to input text, 
+Description: Apply 'Wordpiece' (<arXiv:1609.08144>) tokenization to input text, 
  given an appropriate vocabulary. The 'BERT' (<arXiv:1810.04805>) tokenization 
  conventions are used by default.
 Encoding: UTF-8
