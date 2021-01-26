@@ -1,3 +1,7 @@
+# wordpiece 0.0.7
+
+* Get ready for CRAN (@jonathanbratt)
+
 # wordpiece 0.0.6
 
 * Oops, make tiny sample vocab compatible with RBERT (@jonathanbratt)
