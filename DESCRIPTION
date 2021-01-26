@@ -23,15 +23,15 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jonathanbratt/wordpiece
 BugReports: https://github.com/jonathanbratt/wordpiece/issues
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.3.0)
 License: Apache License (>= 2)
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Imports:
-    digest (>= 0.6.27),
-    purrr (>= 0.3.4),
-    rappdirs (>= 0.3.1),
-    stringi (>= 1.5.3)
+    digest (>= 0.6.5),
+    purrr (>= 0.2.3),
+    rappdirs (>= 0.3),
+    stringi (>= 1.0)
 Suggests: 
     testthat (>= 2.1.0),
     knitr,
