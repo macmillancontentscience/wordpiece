@@ -15,7 +15,4 @@ Character vector of tokens, split on whitespace.
 \description{
 Run basic whitespace cleaning and splitting on a piece of text.
 }
-\examples{
-wordpiece:::.whitespace_tokenize(text = " some\ttext \n with  whitespace ")
-}
 \keyword{internal}
