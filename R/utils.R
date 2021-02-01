@@ -405,7 +405,7 @@
 
 #' Determine Vocabulary Casedness
 #'
-#' Determine whether or not a wordpiece vocabulary is case-sensitve.
+#' Determine whether or not a wordpiece vocabulary is case-sensitive.
 #'
 #' If none of the tokens in the vocabulary start with a capital letter, it will
 #' be assumed to be uncased. Note that tokens like "\\[CLS\\]" contain uppercase

@@ -13,7 +13,7 @@
 TRUE if the vocabulary is cased, FALSE if uncased.
 }
 \description{
-Determine whether or not a wordpiece vocabulary is case-sensitve.
+Determine whether or not a wordpiece vocabulary is case-sensitive.
 }
 \details{
 If none of the tokens in the vocabulary start with a capital letter, it will
