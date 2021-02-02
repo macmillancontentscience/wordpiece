@@ -3,7 +3,7 @@
 # wordpiece
 
 <!-- badges: start -->
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) <!-- badges: end -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) <!-- badges: end -->
 
 The goal of wordpiece is to allow for easy text tokenization using a wordpiece vocabulary.
 
