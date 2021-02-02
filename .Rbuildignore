@@ -6,3 +6,4 @@
 ^CODE_OF_CONDUCT\.md$
 ^\.github$
 ^CRAN-RELEASE$
+^cran-comments\.md$
