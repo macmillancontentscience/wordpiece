@@ -10,6 +10,9 @@ x \%||\% y
 \arguments{
 \item{x, y}{If \code{x} is NULL, will return \code{y}; otherwise returns \code{x}.}
 }
+\value{
+Returns \code{x} if \code{x} is not NULL; otherwise returns \code{y}.
+}
 \description{
 Mostly copied from rlang package.
 }

@@ -20,6 +20,7 @@
 #' Mostly copied from rlang package.
 #'
 #' @param x,y If `x` is NULL, will return `y`; otherwise returns `x`.
+#' @return Returns `x` if `x` is not NULL; otherwise returns `y`.
 #' @keywords internal
 #' @name op-null-default
 `%||%` <- function(x, y) {
