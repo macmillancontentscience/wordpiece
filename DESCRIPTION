@@ -1,7 +1,7 @@
 Package: wordpiece
 Type: Package
 Title: R Implementation of Wordpiece Tokenization
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: c(
     person(given = "Jonathan",
            family = "Bratt",
@@ -13,7 +13,7 @@ Authors@R: c(
            role = c("aut"),
            email = "jonthegeek@gmail.com",
            comment = c(ORCID = "0000-0003-4781-4346")),
-    person(given = "Macmillan Learning", 
+    person(given = "Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning", 
            role = c("cph"))
     )
 Description: Apply 'Wordpiece' (<arXiv:1609.08144>) tokenization to input text, 
