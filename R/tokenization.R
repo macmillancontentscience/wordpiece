@@ -12,124 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# load_vocab --------------------------------------------------------------
-
-
-#' Load a vocabulary file
-#'
-#' @param vocab_file path to vocabulary file. File is assumed to be a text file,
-#'   with one token per line, with the line number corresponding to the index of
-#'   that token in the vocabulary.
-#'
-#' @return The vocab as a named integer vector. Names are tokens in vocabulary,
-#'   values are integer indices. The casedness of the vocabulary is inferred
-#'   and attached as the "is_cased" attribute.
-#'
-#'   Note that from the perspective of a neural net, the numeric indices *are*
-#'   the tokens, and the mapping from token to index is fixed. If we changed the
-#'   indexing, it would break any pre-trained models. This is why the vocabulary
-#'   is stored as a named integer vector, and why it starts with index zero.
-#'
-#' @export
-#'
-#' @examples
-#' # Get path to sample vocabulary included with package.
-#' vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
-#' vocab <- load_vocab(vocab_file = vocab_path)
-load_vocab <- function(vocab_file) {
-  token_list <- readLines(vocab_file)
-  token_list <- purrr::map(token_list, function(token) {
-    .convert_to_unicode(trimws(token))})
-  # The vocab is zero-indexed, and we need to preserve that indexing.
-  index_list <- seq_along(token_list) - 1
-  names(index_list) <- token_list
-  # determine casedness of vocab
-  is_cased <- .infer_case_from_vocab(index_list)
-  vocab <- .new_wordpiece_vocabulary(index_list, is_cased)
-  return(.validate_wordpiece_vocabulary(vocab))
-}
-
-
-# load_or_retrieve_vocab ------------------------------------------------------
-
-
-#' Load a vocabulary file, or retrieve from cache
-#'
-#' @inheritParams load_vocab
-#' @param use_cache Logical; if TRUE, will attempt to retrieve the vocabulary
-#'   from the specified cache location, or, if not found there, will ask to save
-#'   the vocabulary as an .rds file.
-#' @param cache_dir Character; the path to a cache directory (defaults to
-#'   location returned by `get_cache_dir()`).
-#'
-#' @return The vocab as a named integer vector. Names are tokens in vocabulary,
-#'   values are integer indices. The casedness of the vocabulary is inferred
-#'   and attached as the "is_cased" attribute.
-#'
-#'   Note that from the perspective of a neural net, the numeric indices *are*
-#'   the tokens, and the mapping from token to index is fixed. If we changed the
-#'   indexing, it would break any pre-trained models. This is why the vocabulary
-#'   is stored as a named integer vector, and why it starts with index zero.
-#'
-#' @export
-#'
-#' @examples
-#' # Get path to sample vocabulary included with package.
-#' vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
-#' vocab <- load_or_retrieve_vocab(vocab_file = vocab_path, use_cache = FALSE)
-load_or_retrieve_vocab <- function(vocab_file,
-                                   use_cache = TRUE,
-                                   cache_dir = get_cache_dir()) {
-  if (use_cache) {
-    cache_filepath <- file.path(cache_dir, .make_cache_filename(vocab_file))
-    if (file.exists(cache_filepath)) {
-      return(readRDS(cache_filepath)) # nocov
-    }
-  }
-  # Guess we have to load the vocab from text file.
-  vocab <- load_vocab(vocab_file)
-
-  if (use_cache) { # nocov start
-    # ask for permission to write to cache
-    if (interactive()) {
-      if (isTRUE(utils::askYesNo(paste0("Cache vocabulary at ",
-                                        cache_filepath, "?")))) {
-        # make sure that the directory exists
-        if (!dir.exists(cache_dir)) {
-          dir.create(path = cache_dir, recursive = TRUE)
-        }
-        saveRDS(vocab, cache_filepath)
-      }
-    }
-  } # nocov end
-  return(vocab)
-}
-
 # wordpiece_tokenize ----------------------------------------------------
 
 #' Tokenize Sequence with Word Pieces
 #'
-#' Given a single sequence of text and a wordpiece vocabulary, tokenizes the
-#' text.
+#' Given a sequence of text and a wordpiece vocabulary, tokenizes the text.
 #'
-#' @inheritParams .tokenize_word
-#' @param text Character scalar; text to tokenize.
+#' @inheritParams .wp_tokenize_single_string
+#' @param text Character; text to tokenize.
 #'
-#' @return A named integer vector, giving the tokenization of the input
-#'   sequence. The integers values are the token ids, and the names are the
+#' @return A list of named integer vectors, giving the tokenization of the input
+#'   sequences. The integer values are the token ids, and the names are the
 #'   tokens.
 #' @export
 #'
 #' @examples
-#' # Get path to sample vocabulary included with package.
-#' vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
-#' vocab <- load_or_retrieve_vocab(vocab_file = vocab_path, use_cache = FALSE)
 #' tokens <- wordpiece_tokenize(
-#'   text = "I love tacos!",
-#'   vocab = vocab
+#'   text = c(
+#'     "I love tacos!",
+#'     "I also kinda like apples."
+#'   )
 #' )
 wordpiece_tokenize <- function(text,
-                               vocab,
+                               vocab = wordpiece_vocab(),
                                unk_token = "[UNK]",
                                max_chars = 100) {
   is_cased <- attr(vocab, "is_cased")
@@ -137,20 +42,108 @@ wordpiece_tokenize <- function(text,
     text <- tolower(text)
   }
 
-  text <- .convert_to_unicode(text)
-  text <- .clean_text(text)
-  text <- .tokenize_chinese_chars(text)
-  text <- .strip_accents(text)
-  text <- .split_on_punc(text)
-  text <- purrr::map(.whitespace_tokenize(text),
-                     .f = .tokenize_word,
-                     vocab = vocab,
-                     unk_token = unk_token,
-                     max_chars = max_chars)
-  text <- unlist(text)
-  ids <- vocab[text]
-  names(ids) <- text
+  text <- piecemaker::prepare_and_tokenize(
+    text = text,
+    prepare = TRUE,
+    remove_terminal_hyphens = FALSE
+  )
+
+  tokens <- purrr::map(
+    text,
+    .f = .wp_tokenize_single_string,
+    vocab = vocab,
+    unk_token = unk_token,
+    max_chars = max_chars
+  )
+  return(tokens)
+}
+
+
+# .wp_tokenize_single_string -------------------------------------------------
+
+#' Tokenize an Input Word-by-word
+#'
+#' @param words Character; a vector of words (generated by space-tokenizing a
+#'   single input).
+#' @inheritParams .wp_tokenize_word
+#'
+#' @return A named integer vector of tokenized words.
+#' @keywords internal
+.wp_tokenize_single_string <- function(words,
+                                       vocab,
+                                       unk_token,
+                                       max_chars) {
+  token_vector <- unlist(
+    purrr::map(
+      words,
+      .f = .wp_tokenize_word,
+      vocab = vocab,
+      unk_token = unk_token,
+      max_chars = max_chars
+    )
+  )
+  ids <- vocab[token_vector]
+  names(ids) <- token_vector
   return(ids)
 }
 
 
+# .wp_tokenize_word -----------------------------------------------------------
+
+#' Tokenize a Word
+#'
+#' Tokenize a single "word" (no whitespace). The word can technically contain
+#' punctuation, but in BERT's tokenization, punctuation has been split out by
+#' this point.
+#'
+#' @param word Word to tokenize.
+#' @param vocab Named integer vector containing vocabulary words
+#' @param unk_token Token to represent unknown words.
+#' @param max_chars Maximum length of word recognized.
+#'
+#' @return Input word as a list of tokens.
+#' @keywords internal
+.wp_tokenize_word <- function(word,
+                              vocab,
+                              unk_token = "[UNK]",
+                              max_chars = 100) {
+  vocab <- names(vocab)
+  if (stringi::stri_length(word) > max_chars) {
+    return(unk_token)
+  }
+  if (word %in% vocab) {
+    return(word)
+  }
+
+  is_bad <- FALSE
+  start <- 1
+  sub_tokens <- character(0)
+  while (start <= stringi::stri_length(word)) {
+    end <- stringi::stri_length(word)
+
+    cur_substr <- NA_character_
+    while (start <= end) {
+      sub_str <- substr(word, start, end) # inclusive on both ends
+      if (start > 1) { # means this substring is a suffix, so add '##'
+        sub_str <- paste0("##", sub_str)
+      }
+      if (sub_str %in% vocab) {
+        cur_substr <- sub_str
+        break
+      }
+      end <- end - 1
+    }
+    if (is.na(cur_substr)) {
+      is_bad <- TRUE # nocov
+      break # nocov
+    }
+
+    sub_tokens <- append(sub_tokens, cur_substr)
+    start <- end + 1 # pick up where we left off
+  }
+
+  if (is_bad) {
+    return(unk_token) # nocov
+  }
+  return(sub_tokens)
+}

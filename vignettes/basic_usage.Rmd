@@ -31,10 +31,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package applies [WordPiece](https://arxiv.org/pdf/1609.08144v2.pdf) 
-tokenization to input text, given an appropriate WordPiece vocabulary. 
-Currently, the [BERT](https://arxiv.org/pdf/1810.04805.pdf) tokenization 
-conventions are used. The basic tokenization algorithm is:
+This package applies [WordPiece](https://arxiv.org/pdf/1609.08144v2.pdf)  tokenization to input text, given an appropriate WordPiece vocabulary.
+The [BERT](https://arxiv.org/pdf/1810.04805.pdf) tokenization conventions are used. The basic tokenization algorithm is:
 
  - Put spaces around punctuation.
  - For each resulting word, if the word is found in the WordPiece vocabulary,
@@ -45,59 +43,71 @@ conventions are used. The basic tokenization algorithm is:
  - If the word can't be represented by vocabulary pieces, or if it exceeds a 
  certain length, replace it with a specified "unknown" token.
  
- Ideally, a WordPiece vocabulary will be complete enough to represent any word,
-but this is not required. 
+Ideally, a WordPiece vocabulary will be complete enough to represent any word, but this is not required.
+
+## Provided Vocabularies
+
+Two vocabularies are provided via the {wordpiece.data} package.
+These are the wordpiece vocabularies used in Google Research's BERT models (and most models based on BERT).
+
+```{r default-vocabs}
+library(wordpiece)
+
+# The default vocabulary is uncased.
+wordpiece_tokenize(
+  "I like tacos!"
+)
+
+# A cased vocabulary is also provided.
+wordpiece_tokenize(
+  "I like tacos!",
+  vocab = wordpiece_vocab(cased = TRUE)
+)
+```
  
-### Loading a Vocabulary
+## Loading a Vocabulary
+
+For the rest of this vignette, we use a tiny vocabulary for illustrative purposes.
+You should not use this vocabulary for actual tokenization.
  
-The vocabulary is represented by the package as a named integer vector, with a
-logical attribute `is_cased` to indicate whether the vocabulary is case
-sensitive. The names are the actual tokens, and the integer values are the token
-indices (this would be the input to a BERT model, for example).
+The vocabulary is represented by the package as a named integer vector, with a logical attribute `is_cased` to indicate whether the vocabulary is case sensitive.
+The names are the actual tokens, and the integer values are the token indices.
+The integer values would be the input to a BERT model, for example.
 
 A vocabulary can be read from a text file containing a single token per line.
-The token index is taken to be the line number, *starting from zero*. These
-conventions are adopted for compatibility with the vocabulary and file format
-used in the pretrained BERT checkpoints released by Google Research. The
-casedness of the vocabulary is inferred from the content of the vocabulary. 
-
-When a text vocabulary is loaded in an interactive R session, the option is
-given to cache the vocabulary as an RDS file for faster future loading.
-
+The token index is taken to be the line number, *starting from zero*.
+These conventions are adopted for compatibility with the vocabulary and file format used in the pretrained BERT checkpoints released by Google Research.
+The casedness of the vocabulary is inferred from the content of the vocabulary.
 
 ```{r example0}
-library(wordpiece)
 # Get path to sample vocabulary included with package.
 vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
 
 # Load the vocabulary.
-vocab <- load_or_retrieve_vocab(vocab_path, use_cache = FALSE)
+vocab <- load_vocab(vocab_path)
 
 # Take a peek at the vocabulary.
 head(vocab)
 ```
 
-### Tokenizing Text
+When a text vocabulary is loaded with `load_or_retrieve_vocabulary` in an interactive R session, the option is given to cache the vocabulary as an RDS file for faster future loading.
 
-Tokenize text by calling `wordpiece_tokenize` on the text, passing the
-vocabulary as the `vocab` parameter.  The output of `wordpiece_tokenize` is a
-named integer vector of token indices.
+## Tokenizing Text
+
+Tokenize text by calling `wordpiece_tokenize` on the text, passing the vocabulary as the `vocab` parameter.
+The output of `wordpiece_tokenize` is a named integer vector of token indices.
 
 ```{r example1}
 # Now tokenize some text!
 wordpiece_tokenize(text = "I love tacos, apples, and tea!", vocab = vocab)
 ```
 
-### Vocabulary Case
+## Vocabulary Case
 
-The above vocabulary contained no tokens starting with an uppercase letter, so
-it was assumed to be uncased. When tokenizing text with an uncased vocabulary,
-the input is converted to lowercase before any other processing is applied. If
-the vocabulary contains at least one capitalized token, it will be taken as
-case-sensitive, and the case of the input text is preserved. Note that in a
-cased vocabulary, capitalized and uncapitalized versions of the same word are
-different tokens, and must *both* be included in the vocabulary to be
-recognized.
+The above vocabulary contained no tokens starting with an uppercase letter, so it was assumed to be uncased.
+When tokenizing text with an uncased vocabulary, the input is converted to lowercase before any other processing is applied.
+If the vocabulary contains at least one capitalized token, it will be taken as case-sensitive, and the case of the input text is preserved.
+Note that in a cased vocabulary, capitalized and uncapitalized versions of the same word are different tokens, and must *both* be included in the vocabulary to be recognized.
 
 ```{r example2}
 # The above vocabulary was uncased.
@@ -106,7 +116,7 @@ attr(vocab, "is_cased")
 # Here is the same vocabulary, but containing the capitalized token "Hi".
 vocab_path2 <- system.file("extdata", "tiny_vocab_cased.txt", 
                            package = "wordpiece")
-vocab_cased <- load_or_retrieve_vocab(vocab_path2, use_cache = FALSE)
+vocab_cased <- load_vocab(vocab_path2)
 head(vocab_cased)
 
 # vocab_cased is inferred to be case-sensitive...
@@ -117,18 +127,16 @@ attr(vocab_cased, "is_cased")
 wordpiece_tokenize(text = "And I love tacos and salsa!", vocab = vocab_cased)
 ```
 
-### Representing "Unknown" Tokens
+## Representing "Unknown" Tokens
 
-Note that the default value for the `unk_token` argument, "[UNK]", is present in
-the above vocabularies, so it had an integer index in the tokenization. If that
-token were not in the vocabulary, its index would be coded as `NA`.
+Note that the default value for the `unk_token` argument, "[UNK]", is present in the above vocabularies, so it had an integer index in the tokenization.
+If that token were not in the vocabulary, its index would be coded as `NA`.
 
 ```{r example3}
-
 wordpiece_tokenize(text = "I love tacos!", 
                    vocab = vocab_cased, 
                    unk_token = "[missing]")
 ```
 
-The package defaults are set to be compatible with BERT tokenization. If you
-have a different use case, be sure to check all parameter values.
+The package defaults are set to be compatible with BERT tokenization.
+If you have a different use case, be sure to check all parameter values.
