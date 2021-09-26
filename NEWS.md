@@ -1,6 +1,10 @@
+# wordpiece 2.0.0
+
+# Updated wordpiece_tokenize to accept a character vector with length > 1. This makese the package more usable within a workflow, but will break scripts that used the previous version (the output is now a list of character vectors, instead of a single character vector). (@jonthegeek)
+
 # wordpiece 1.0.0
 
-* Get ready for CRAN (@jonathanbratt)
+* Initial CRAN release. (@jonathanbratt)
 
 # wordpiece 0.0.6
 
