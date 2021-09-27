@@ -26,15 +26,38 @@ The goal of wordpiece is to allow for easy text tokenization using a wordpiece v
 You can install the released version of wordpiece from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# No you can't.
-# install.packages("wordpiece")
+install.packages("wordpiece")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("jonathanbratt/wordpiece")
+devtools::install_github("macmillancontentscience/wordpiece")
+```
+
+# Examples
+
+This package can be used to tokenize text for modeling.
+A common usecase would be to tokenize all text in a data.frame or other tibble.
+
+```{r tokenize_df}
+library(wordpiece)
+library(dplyr, warn.conflicts = FALSE)
+df_tokenized <- tibble(
+  text = c(
+    "I like tacos.",
+    "I like apples with cheese.",
+    "The unaffable coder wrote incorrect examples."
+  )
+) %>% 
+  mutate(
+    tokens = wordpiece_tokenize(text)
+  )
+
+df_tokenized
+
+df_tokenized$tokens[[1]]
 ```
 
 ## Code of Conduct

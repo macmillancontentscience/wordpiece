@@ -1,6 +1,11 @@
+# wordpiece 2.0.0
+
+* Refactored `wordpiece_tokenize` to accept a character vector with length > 1. This makes the package more usable within a workflow, but will break scripts that used the previous version (the output is now a list of character vectors, instead of a single character vector). (@jonthegeek)
+* Added a pair of default vocabularies via the {wordpiece.data} package. (@jonthegeek)
+
 # wordpiece 1.0.0
 
-* Get ready for CRAN (@jonathanbratt)
+* Initial CRAN release. (@jonathanbratt)
 
 # wordpiece 0.0.6
 

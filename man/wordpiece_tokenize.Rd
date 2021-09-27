@@ -4,10 +4,15 @@
 \alias{wordpiece_tokenize}
 \title{Tokenize Sequence with Word Pieces}
 \usage{
-wordpiece_tokenize(text, vocab, unk_token = "[UNK]", max_chars = 100)
+wordpiece_tokenize(
+  text,
+  vocab = wordpiece_vocab(),
+  unk_token = "[UNK]",
+  max_chars = 100
+)
 }
 \arguments{
-\item{text}{Character scalar; text to tokenize.}
+\item{text}{Character; text to tokenize.}
 
 \item{vocab}{Named integer vector containing vocabulary words}
 
@@ -16,20 +21,18 @@ wordpiece_tokenize(text, vocab, unk_token = "[UNK]", max_chars = 100)
 \item{max_chars}{Maximum length of word recognized.}
 }
 \value{
-A named integer vector, giving the tokenization of the input
-sequence. The integers values are the token ids, and the names are the
+A list of named integer vectors, giving the tokenization of the input
+sequences. The integer values are the token ids, and the names are the
 tokens.
 }
 \description{
-Given a single sequence of text and a wordpiece vocabulary, tokenizes the
-text.
+Given a sequence of text and a wordpiece vocabulary, tokenizes the text.
 }
 \examples{
-# Get path to sample vocabulary included with package.
-vocab_path <- system.file("extdata", "tiny_vocab.txt", package = "wordpiece")
-vocab <- load_or_retrieve_vocab(vocab_file = vocab_path, use_cache = FALSE)
 tokens <- wordpiece_tokenize(
-  text = "I love tacos!",
-  vocab = vocab
+  text = c(
+    "I love tacos!",
+    "I also kinda like apples."
+  )
 )
 }
