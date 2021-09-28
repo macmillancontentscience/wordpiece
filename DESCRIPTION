@@ -33,7 +33,7 @@ Imports:
     purrr (>= 0.2.3),
     rlang,
     stringi (>= 1.0),
-    wordpiece.data
+    wordpiece.data (>= 1.0.1)
 Suggests: 
     covr,
     knitr,
