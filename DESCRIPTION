@@ -20,7 +20,6 @@ Description: Apply 'Wordpiece' (<arXiv:1609.08144>) tokenization to input text,
  given an appropriate vocabulary. The 'BERT' (<arXiv:1810.04805>) tokenization 
  conventions are used by default.
 Encoding: UTF-8
-LazyData: true
 URL: https://github.com/macmillancontentscience/wordpiece
 BugReports: https://github.com/macmillancontentscience/wordpiece/issues
 Depends: R (>= 3.3.0)
