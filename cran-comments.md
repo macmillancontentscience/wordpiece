@@ -1,5 +1,5 @@
 ## v. 2.0.0
-* Resubmitting 2021-09-28
+* Resubmitting 2021-10-18
 * Updated to use the wordpiece.data and piecemaker packages.
 
 ## Test environments

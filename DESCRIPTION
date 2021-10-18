@@ -1,7 +1,7 @@
 Package: wordpiece
 Type: Package
 Title: R Implementation of Wordpiece Tokenization
-Version: 2.0.0
+Version: 2.0.1
 Authors@R: c(
     person(given = "Jonathan",
            family = "Bratt",
@@ -32,7 +32,7 @@ Imports:
     purrr (>= 0.2.3),
     rlang,
     stringi (>= 1.0),
-    wordpiece.data (>= 1.0.1)
+    wordpiece.data (>= 1.0.2)
 Suggests: 
     covr,
     knitr,
