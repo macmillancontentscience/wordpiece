@@ -1,4 +1,4 @@
-## v. 2.0.0
+## v. 2.0.1
 * Resubmitting 2021-10-18
 * Updated to use the wordpiece.data and piecemaker packages.
 
