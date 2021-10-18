@@ -1,12 +1,14 @@
-## v. 1.0.2
-* Resubmitting 2021-02-08
-* Put the full company identifier in `Authors@R`: 
-Bedford Freeman & Worth Pub Grp LLC DBA Macmillan Learning. Previously, just
-the short name "Macmillan Learning" was listed in `Authors@R`.
-* Added `\value` field to documentation for the unexported function `%||%`.
+## v. 2.0.1
+* Resubmitting 2021-10-18
+* Updated to use the wordpiece.data and piecemaker packages.
 
+## Test environments
+* local R installation, R 4.0.3
+* win-builder (devel)
+* Windows Server 2008 R2 SP1, R-devel, 32/64 bit (rhub)
+* Ubuntu Linux 20.04.1 LTS, R-release, GCC (rhub)
+* Fedora Linux, R-devel, clang, gfortran (rhub)
 
-## v. 1.0.1
-* Resubmitting 2021-02-02
-* Fixed the outdated URLs in the README
+## R CMD check results
 
+0 errors | 0 warnings | 0 notes 
