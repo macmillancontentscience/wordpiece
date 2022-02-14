@@ -15,6 +15,12 @@
 #' @importFrom rlang %||%
 rlang::`%||%`
 
+#' @importFrom fastmatch %fin%
+fastmatch::`%fin%`
+
+#' @importFrom fastmatch fmatch
+fastmatch::fmatch
+
 #' @importFrom wordpiece.data wordpiece_vocab
 #' @export
 wordpiece.data::wordpiece_vocab

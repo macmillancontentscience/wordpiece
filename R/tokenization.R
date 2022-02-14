@@ -38,6 +38,8 @@ wordpiece_tokenize <- function(text,
                                unk_token = "[UNK]",
                                max_chars = 100) {
   is_cased <- attr(vocab, "is_cased")
+  vocab <- names(vocab)
+
   if (!is_cased) {
     text <- tolower(text)
   }
@@ -82,9 +84,12 @@ wordpiece_tokenize <- function(text,
       max_chars = max_chars
     )
   )
-  ids <- vocab[token_vector]
+  # Get IDs by position. Note that this means that the explicit integer
+  # values in the original vocab don't mean anything anymore. We should
+  # probably do something to address this.
+  ids <- fmatch(token_vector, vocab)
   names(ids) <- token_vector
-  return(ids)
+  return(ids - 1L) # default to 0-based index, for historical consistency
 }
 
 
@@ -107,19 +112,19 @@ wordpiece_tokenize <- function(text,
                               vocab,
                               unk_token = "[UNK]",
                               max_chars = 100) {
-  vocab <- names(vocab)
-  if (stringi::stri_length(word) > max_chars) {
+  word_len <- stringi::stri_length(word)
+  if (word_len > max_chars) {
     return(unk_token)
   }
-  if (word %in% vocab) {
+  if (word %fin% vocab) {
     return(word)
   }
 
   is_bad <- FALSE
   start <- 1
   sub_tokens <- character(0)
-  while (start <= stringi::stri_length(word)) {
-    end <- stringi::stri_length(word)
+  while (start <= word_len) {
+    end <- word_len
 
     cur_substr <- NA_character_
     while (start <= end) {
@@ -127,7 +132,7 @@ wordpiece_tokenize <- function(text,
       if (start > 1) { # means this substring is a suffix, so add '##'
         sub_str <- paste0("##", sub_str)
       }
-      if (sub_str %in% vocab) {
+      if (sub_str %fin% vocab) {
         cur_substr <- sub_str
         break
       }
