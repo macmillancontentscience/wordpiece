@@ -167,7 +167,7 @@ wordpiece_tokenize <- function(text,
 }
 
 .process_vocab.character <- function(v) {
-  v
+  return(v)
 }
 
 .process_wp_vocab <- function(v) {
@@ -179,11 +179,11 @@ wordpiece_tokenize <- function(text,
 }
 
 .process_wp_vocab.integer <- function(v) {
-  names(v)[order(v)]
+  return(names(v)[order(v)])
 }
 
 .process_wp_vocab.character <- function(v) {
-  v
+  return(v)
 }
 
 
@@ -195,9 +195,9 @@ wordpiece_tokenize <- function(text,
 }
 
 .get_casedness.wordpiece_vocabulary <- function(v) {
-  attr(v, "is_cased")
+  return(attr(v, "is_cased"))
 }
 
 .get_casedness.character <- function(v) {
-  .infer_case_from_vocab(v)
+  return(.infer_case_from_vocab(v))
 }
