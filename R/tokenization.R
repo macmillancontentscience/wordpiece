@@ -38,7 +38,6 @@ wordpiece_tokenize <- function(text,
                                unk_token = "[UNK]",
                                max_chars = 100) {
   is_cased <- .get_casedness(vocab)
-  # vocab <- names(vocab)
   vocab <- .process_vocab(vocab)
 
   if (!is_cased) {
@@ -186,16 +185,6 @@ wordpiece_tokenize <- function(text,
 .process_wp_vocab.character <- function(v) {
   v
 }
-
-
-
-# vocab <- wordpiece.data::wordpiece_vocab()
-#
-# charv <- names(vocab)
-# class(charv) <- c("wordpiece_vocabulary", class(charv))
-# .process_vocab(vocab)
-# .process_vocab(charv)
-# order(vocab)
 
 
 # .get_casedness ----------------------------------------------------------
