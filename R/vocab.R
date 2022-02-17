@@ -72,7 +72,7 @@ prepare_vocab <- function(token_list) {
   named_vocab <- seq_along(token_list) - 1L
   names(named_vocab) <- token_list
 
-  is_cased <- .infer_case_from_vocab(named_vocab)
+  is_cased <- .infer_case_from_vocab(token_list)
   vocab_all <- .new_wordpiece_vocabulary(
     vocab = named_vocab,
     is_cased = is_cased
@@ -119,12 +119,12 @@ load_or_retrieve_vocab <- function(vocab_file) {
 #' be assumed to be uncased. Note that tokens like "\\[CLS\\]" contain uppercase
 #' letters, but don't start with uppercase letters.
 #'
-#' @param vocab The vocabulary as a named integer vector.
+#' @param vocab The vocabulary as a character vector.
 #' @return TRUE if the vocabulary is cased, FALSE if uncased.
 #'
 #' @keywords internal
 .infer_case_from_vocab <- function(vocab) {
-  is_cased <- any(grepl(pattern = "^[A-Z]", names(vocab)))
+  is_cased <- any(grepl(pattern = "^[A-Z]", vocab))
   return(is_cased)
 }
 

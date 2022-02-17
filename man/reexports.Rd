@@ -5,7 +5,6 @@
 \alias{reexports}
 \alias{\%||\%}
 \alias{\%fin\%}
-\alias{fmatch}
 \alias{wordpiece_vocab}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -14,7 +13,7 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{fastmatch}{\code{\link[fastmatch:fmatch]{\%fin\%}}, \code{\link[fastmatch]{fmatch}}}
+  \item{fastmatch}{\code{\link[fastmatch:fmatch]{\%fin\%}}}
 
   \item{rlang}{\code{\link[rlang:op-null-default]{\%||\%}}}
 

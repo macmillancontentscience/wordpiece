@@ -14,7 +14,9 @@ wordpiece_tokenize(
 \arguments{
 \item{text}{Character; text to tokenize.}
 
-\item{vocab}{Named integer vector containing vocabulary words}
+\item{vocab}{Character vector of vocabulary tokens. The tokens are assumed to
+be in order of index, with the first index taken as zero to be compatible
+with Python implementations.}
 
 \item{unk_token}{Token to represent unknown words.}
 

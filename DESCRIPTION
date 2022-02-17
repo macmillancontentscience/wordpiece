@@ -29,6 +29,7 @@ Roxygen: list(markdown = TRUE)
 Imports:
     dlr (>= 1.0.0),
     fastmatch (>= 1.1),
+    memoise (>= 2.0.0),
     piecemaker (>= 1.0.0),
     purrr (>= 0.2.3),
     rlang,

@@ -37,8 +37,9 @@ wordpiece_tokenize <- function(text,
                                vocab = wordpiece_vocab(),
                                unk_token = "[UNK]",
                                max_chars = 100) {
-  is_cased <- attr(vocab, "is_cased")
-  vocab <- names(vocab)
+  is_cased <- .get_casedness(vocab)
+  # vocab <- names(vocab)
+  vocab <- .process_vocab(vocab)
 
   if (!is_cased) {
     text <- tolower(text)
@@ -87,7 +88,7 @@ wordpiece_tokenize <- function(text,
   # Get IDs by position. Note that this means that the explicit integer
   # values in the original vocab don't mean anything anymore. We should
   # probably do something to address this.
-  ids <- fmatch(token_vector, vocab)
+  ids <- fastmatch::fmatch(token_vector, vocab)
   names(ids) <- token_vector
   return(ids - 1L) # default to 0-based index, for historical consistency
 }
@@ -102,7 +103,9 @@ wordpiece_tokenize <- function(text,
 #' this point.
 #'
 #' @param word Word to tokenize.
-#' @param vocab Named integer vector containing vocabulary words
+#' @param vocab Character vector of vocabulary tokens. The tokens are assumed to
+#'   be in order of index, with the first index taken as zero to be compatible
+#'   with Python implementations.
 #' @param unk_token Token to represent unknown words.
 #' @param max_chars Maximum length of word recognized.
 #'
@@ -151,4 +154,61 @@ wordpiece_tokenize <- function(text,
     return(unk_token) # nocov
   }
   return(sub_tokens)
+}
+
+
+# .process_vocab -----------------------------------------------------------
+
+.process_vocab <- function(v) {
+  UseMethod(".process_vocab", v)
+}
+
+.process_vocab.wordpiece_vocabulary <- function(v) {
+  .process_wp_vocab(v)
+}
+
+.process_vocab.character <- function(v) {
+  v
+}
+
+.process_wp_vocab <- function(v) {
+  UseMethod(".process_wp_vocab", v)
+}
+
+.process_wp_vocab.wordpiece_vocabulary <- function(v) {
+  NextMethod()
+}
+
+.process_wp_vocab.integer <- function(v) {
+  names(v)[order(v)]
+}
+
+.process_wp_vocab.character <- function(v) {
+  v
+}
+
+
+
+# vocab <- wordpiece.data::wordpiece_vocab()
+#
+# charv <- names(vocab)
+# class(charv) <- c("wordpiece_vocabulary", class(charv))
+# .process_vocab(vocab)
+# .process_vocab(charv)
+# order(vocab)
+
+
+# .get_casedness ----------------------------------------------------------
+
+
+.get_casedness <- function(v) {
+  UseMethod(".get_casedness", v)
+}
+
+.get_casedness.wordpiece_vocabulary <- function(v) {
+  attr(v, "is_cased")
+}
+
+.get_casedness.character <- function(v) {
+  .infer_case_from_vocab(v)
 }

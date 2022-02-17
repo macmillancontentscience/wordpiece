@@ -30,3 +30,28 @@ test_that("good vocabularies load as expected", {
   testthat::expect_s3_class(vocab, "wordpiece_vocabulary")
   testthat::expect_snapshot(vocab)
 })
+
+test_that("various vocabulary formats work", {
+  # vocab_file <- "tests/testthat/vocab.txt"
+  vocab_file <- "vocab.txt"
+  vocab <- load_vocab(vocab_file = vocab_file)
+
+  # just a mockup
+  vocab_char <- structure(
+    names(vocab),
+    "is_cased" = FALSE,
+    class = c("wordpiece_vocabulary", "character")
+  )
+  char_vec <- names(vocab)
+
+  text <- "I love tacos!"
+  expected_result <- c(2L, 3L, 4L, 1L)
+  names(expected_result) <- c("i", "love", "tacos", "!")
+  expected_result <- list(expected_result)
+
+  test_result <- wordpiece_tokenize(text = text, vocab = vocab_char)
+  testthat::expect_identical(test_result, expected_result)
+
+  test_result <- wordpiece_tokenize(text = text, vocab = char_vec)
+  testthat::expect_identical(test_result, expected_result)
+})
