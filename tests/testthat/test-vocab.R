@@ -56,4 +56,12 @@ test_that("various vocabulary formats work", {
 
   test_result <- wordpiece_tokenize(text = text, vocab = char_vec)
   testthat::expect_identical(test_result, expected_result)
+
+  # check error messages
+  testthat::expect_error(wordpiece_tokenize(text = text, vocab = 1),
+                         regexp = "Unsupported")
+  testthat::expect_error(.process_vocab(1),
+                         regexp = "Unsupported")
+  testthat::expect_error(.process_wp_vocab(1),
+                         regexp = "Unsupported")
 })
