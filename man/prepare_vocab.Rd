@@ -10,15 +10,14 @@ prepare_vocab(token_list)
 \item{token_list}{A character vector of tokens.}
 }
 \value{
-The vocab as a named integer vector. Names are tokens in the
-vocabulary, values are integer indices. The casedness of the vocabulary is
-inferred and attached as the "is_cased" attribute.
+The vocab as a character vector of tokens. The casedness of the
+vocabulary is inferred and attached as the "is_cased" attribute. The
+vocabulary indices are taken to be the positions of the tokens,
+\emph{starting at zero} for historical consistency.
 
 Note that from the perspective of a neural net, the numeric indices \emph{are}
 the tokens, and the mapping from token to index is fixed. If we changed the
-indexing, it would break any pre-trained models using that vocabulary. This
-is why the vocabulary is stored as a named integer vector, and why it
-starts with index zero.
+indexing (the order of the tokens), it would break any pre-trained models.
 }
 \description{
 We use a special named integer vector with class wordpiece_vocabulary to

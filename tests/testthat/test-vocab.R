@@ -36,20 +36,22 @@ test_that("various vocabulary formats work", {
   vocab_file <- "vocab.txt"
   vocab <- load_vocab(vocab_file = vocab_file)
 
-  # just a mockup
-  vocab_char <- structure(
-    names(vocab),
+  # a mockup of the old format for backwards compatibility
+  int_vocab <- seq_len(length(vocab)) - 1L
+  names(int_vocab) <- vocab
+  vocab_int <- structure(
+    int_vocab,
     "is_cased" = FALSE,
-    class = c("wordpiece_vocabulary", "character")
+    class = c("wordpiece_vocabulary", "integer")
   )
-  char_vec <- names(vocab)
+  char_vec <- names(int_vocab) # To lose the attributes...
 
   text <- "I love tacos!"
   expected_result <- c(2L, 3L, 4L, 1L)
   names(expected_result) <- c("i", "love", "tacos", "!")
   expected_result <- list(expected_result)
 
-  test_result <- wordpiece_tokenize(text = text, vocab = vocab_char)
+  test_result <- wordpiece_tokenize(text = text, vocab = vocab_int)
   testthat::expect_identical(test_result, expected_result)
 
   test_result <- wordpiece_tokenize(text = text, vocab = char_vec)
