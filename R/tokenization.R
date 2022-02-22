@@ -168,6 +168,7 @@ wordpiece_tokenize <- function(text,
 
 #' @rdname dot-process_vocab
 #' @keywords internal
+#' @export
 .process_vocab.default <- function(v) {
   stop("Unsupported vocabulary type. ",
        "The vocabulary should be a character vector ",
@@ -177,12 +178,14 @@ wordpiece_tokenize <- function(text,
 
 #' @rdname dot-process_vocab
 #' @keywords internal
+#' @export
 .process_vocab.wordpiece_vocabulary <- function(v) {
   return(.process_wp_vocab(v))
 }
 
 #' @rdname dot-process_vocab
 #' @keywords internal
+#' @export
 .process_vocab.character <- function(v) {
   return(v)
 }
@@ -199,6 +202,7 @@ wordpiece_tokenize <- function(text,
 
 #' @rdname dot-process_wp_vocab
 #' @keywords internal
+#' @export
 .process_wp_vocab.default <- function(v) {
   stop("Unsupported vocabulary type. ",
        "The vocabulary should be an object of type `wordpiece_vocabulary.` ",
@@ -207,18 +211,21 @@ wordpiece_tokenize <- function(text,
 
 #' @rdname dot-process_wp_vocab
 #' @keywords internal
+#' @export
 .process_wp_vocab.wordpiece_vocabulary <- function(v) {
   NextMethod()
 }
 
 #' @rdname dot-process_wp_vocab
 #' @keywords internal
+#' @export
 .process_wp_vocab.integer <- function(v) {
   return(names(v)[order(v)])
 }
 
 #' @rdname dot-process_wp_vocab
 #' @keywords internal
+#' @export
 .process_wp_vocab.character <- function(v) {
   return(v)
 }
@@ -239,6 +246,7 @@ wordpiece_tokenize <- function(text,
 
 #' @rdname dot-get_casedness
 #' @keywords internal
+#' @export
 .get_casedness.default <- function(v) {
   stop("Unsupported vocabulary type. ",
        "The vocabulary should be a character vector ",
@@ -248,12 +256,14 @@ wordpiece_tokenize <- function(text,
 
 #' @rdname dot-get_casedness
 #' @keywords internal
+#' @export
 .get_casedness.wordpiece_vocabulary <- function(v) {
   return(attr(v, "is_cased"))
 }
 
 #' @rdname dot-get_casedness
 #' @keywords internal
+#' @export
 .get_casedness.character <- function(v) {
   return(.infer_case_from_vocab(v))
 }
