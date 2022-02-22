@@ -30,3 +30,38 @@ test_that("good vocabularies load as expected", {
   testthat::expect_s3_class(vocab, "wordpiece_vocabulary")
   testthat::expect_snapshot(vocab)
 })
+
+test_that("various vocabulary formats work", {
+  # vocab_file <- "tests/testthat/vocab.txt"
+  vocab_file <- "vocab.txt"
+  vocab <- load_vocab(vocab_file = vocab_file)
+
+  # a mockup of the old format for backwards compatibility
+  int_vocab <- seq_len(length(vocab)) - 1L
+  names(int_vocab) <- vocab
+  vocab_int <- structure(
+    int_vocab,
+    "is_cased" = FALSE,
+    class = c("wordpiece_vocabulary", "integer")
+  )
+  char_vec <- names(int_vocab) # To lose the attributes...
+
+  text <- "I love tacos!"
+  expected_result <- c(2L, 3L, 4L, 1L)
+  names(expected_result) <- c("i", "love", "tacos", "!")
+  expected_result <- list(expected_result)
+
+  test_result <- wordpiece_tokenize(text = text, vocab = vocab_int)
+  testthat::expect_identical(test_result, expected_result)
+
+  test_result <- wordpiece_tokenize(text = text, vocab = char_vec)
+  testthat::expect_identical(test_result, expected_result)
+
+  # check error messages
+  testthat::expect_error(wordpiece_tokenize(text = text, vocab = 1),
+                         regexp = "Unsupported")
+  testthat::expect_error(.process_vocab(1),
+                         regexp = "Unsupported")
+  testthat::expect_error(.process_wp_vocab(1),
+                         regexp = "Unsupported")
+})

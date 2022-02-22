@@ -7,7 +7,7 @@
 .new_wordpiece_vocabulary(vocab, is_cased)
 }
 \arguments{
-\item{vocab}{Named integer vector; the "actual" vocabulary.}
+\item{vocab}{Character vector of tokens.}
 
 \item{is_cased}{Logical; whether the vocabulary is cased.}
 }

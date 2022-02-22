@@ -37,7 +37,9 @@ wordpiece_tokenize <- function(text,
                                vocab = wordpiece_vocab(),
                                unk_token = "[UNK]",
                                max_chars = 100) {
-  is_cased <- attr(vocab, "is_cased")
+  is_cased <- .get_casedness(vocab)
+  vocab <- .process_vocab(vocab)
+
   if (!is_cased) {
     text <- tolower(text)
   }
@@ -82,9 +84,10 @@ wordpiece_tokenize <- function(text,
       max_chars = max_chars
     )
   )
-  ids <- vocab[token_vector]
+  # Get IDs by position.
+  ids <- fastmatch::fmatch(token_vector, vocab)
   names(ids) <- token_vector
-  return(ids)
+  return(ids - 1L) # default to 0-based index, for historical consistency
 }
 
 
@@ -97,7 +100,9 @@ wordpiece_tokenize <- function(text,
 #' this point.
 #'
 #' @param word Word to tokenize.
-#' @param vocab Named integer vector containing vocabulary words
+#' @param vocab Character vector of vocabulary tokens. The tokens are assumed to
+#'   be in order of index, with the first index taken as zero to be compatible
+#'   with Python implementations.
 #' @param unk_token Token to represent unknown words.
 #' @param max_chars Maximum length of word recognized.
 #'
@@ -107,19 +112,19 @@ wordpiece_tokenize <- function(text,
                               vocab,
                               unk_token = "[UNK]",
                               max_chars = 100) {
-  vocab <- names(vocab)
-  if (stringi::stri_length(word) > max_chars) {
+  word_len <- stringi::stri_length(word)
+  if (word_len > max_chars) {
     return(unk_token)
   }
-  if (word %in% vocab) {
+  if (word %fin% vocab) {
     return(word)
   }
 
   is_bad <- FALSE
   start <- 1
   sub_tokens <- character(0)
-  while (start <= stringi::stri_length(word)) {
-    end <- stringi::stri_length(word)
+  while (start <= word_len) {
+    end <- word_len
 
     cur_substr <- NA_character_
     while (start <= end) {
@@ -127,7 +132,7 @@ wordpiece_tokenize <- function(text,
       if (start > 1) { # means this substring is a suffix, so add '##'
         sub_str <- paste0("##", sub_str)
       }
-      if (sub_str %in% vocab) {
+      if (sub_str %fin% vocab) {
         cur_substr <- sub_str
         break
       }
@@ -146,4 +151,109 @@ wordpiece_tokenize <- function(text,
     return(unk_token) # nocov
   }
   return(sub_tokens)
+}
+
+
+# .process_vocab -----------------------------------------------------------
+
+#' Process a Vocabulary for Tokenization
+#'
+#' @param v An object of class `wordpiece_vocabulary` or a character vector.
+#'
+#' @return A character vector of tokens for tokenization.
+#' @keywords internal
+.process_vocab <- function(v) {
+  UseMethod(".process_vocab", v)
+}
+
+#' @rdname dot-process_vocab
+#' @keywords internal
+.process_vocab.default <- function(v) {
+  stop("Unsupported vocabulary type. ",
+       "The vocabulary should be a character vector ",
+       "or an object of type `wordpiece_vocabulary.` ",
+       "To use the default wordpiece vocabulary, see `wordpiece_vocab()`.")
+}
+
+#' @rdname dot-process_vocab
+#' @keywords internal
+.process_vocab.wordpiece_vocabulary <- function(v) {
+  return(.process_wp_vocab(v))
+}
+
+#' @rdname dot-process_vocab
+#' @keywords internal
+.process_vocab.character <- function(v) {
+  return(v)
+}
+
+#' Process a Wordpiece Vocabulary for Tokenization
+#'
+#' @param v An object of class `wordpiece_vocabulary`.
+#'
+#' @return A character vector of tokens for tokenization.
+#' @keywords internal
+.process_wp_vocab <- function(v) {
+  UseMethod(".process_wp_vocab", v)
+}
+
+#' @rdname dot-process_wp_vocab
+#' @keywords internal
+.process_wp_vocab.default <- function(v) {
+  stop("Unsupported vocabulary type. ",
+       "The vocabulary should be an object of type `wordpiece_vocabulary.` ",
+       "To use the default wordpiece vocabulary, see `wordpiece_vocab()`.")
+}
+
+#' @rdname dot-process_wp_vocab
+#' @keywords internal
+.process_wp_vocab.wordpiece_vocabulary <- function(v) {
+  NextMethod()
+}
+
+#' @rdname dot-process_wp_vocab
+#' @keywords internal
+.process_wp_vocab.integer <- function(v) {
+  return(names(v)[order(v)])
+}
+
+#' @rdname dot-process_wp_vocab
+#' @keywords internal
+.process_wp_vocab.character <- function(v) {
+  return(v)
+}
+
+
+# .get_casedness ----------------------------------------------------------
+
+
+#' Determine Casedness of Vocabulary
+#'
+#' @param v An object of class `wordpiece_vocabulary`, or a character vector.
+#'
+#' @return TRUE if the vocabulary is case-sensitive, FALSE otherwise.
+#' @keywords internal
+.get_casedness <- function(v) {
+  UseMethod(".get_casedness", v)
+}
+
+#' @rdname dot-get_casedness
+#' @keywords internal
+.get_casedness.default <- function(v) {
+  stop("Unsupported vocabulary type. ",
+       "The vocabulary should be a character vector ",
+       "or an object of type `wordpiece_vocabulary.` ",
+       "To use the default wordpiece vocabulary, see `wordpiece_vocab()`.")
+}
+
+#' @rdname dot-get_casedness
+#' @keywords internal
+.get_casedness.wordpiece_vocabulary <- function(v) {
+  return(attr(v, "is_cased"))
+}
+
+#' @rdname dot-get_casedness
+#' @keywords internal
+.get_casedness.character <- function(v) {
+  return(.infer_case_from_vocab(v))
 }
