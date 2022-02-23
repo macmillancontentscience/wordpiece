@@ -1,10 +1,7 @@
-# wordpiece 2.2.0
-
-* Removed purrr dependency. (#30, @jonthegeek)
-
 # wordpiece 2.1.0
 
 * Implemented various speed improvements, improving speed and memory usage by over 1000x. (#27, @jonathanbratt)
+* Removed purrr dependency. (#30, @jonthegeek)
 
 # wordpiece 2.0.0
 
