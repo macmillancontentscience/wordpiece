@@ -1,3 +1,11 @@
+# wordpiece 2.2.0
+
+* Removed purrr dependency. (#30, @jonthegeek)
+
+# wordpiece 2.1.0
+
+* Implemented various speed improvements, improving speed and memory usage by over 1000x. (#27, @jonathanbratt)
+
 # wordpiece 2.0.0
 
 * Refactored `wordpiece_tokenize` to accept a character vector with length > 1. This makes the package more usable within a workflow, but will break scripts that used the previous version (the output is now a list of character vectors, instead of a single character vector). (@jonthegeek)

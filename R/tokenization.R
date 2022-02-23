@@ -50,9 +50,9 @@ wordpiece_tokenize <- function(text,
     remove_terminal_hyphens = FALSE
   )
 
-  tokens <- purrr::map(
-    text,
-    .f = .wp_tokenize_single_string,
+  tokens <- lapply(
+    X = text,
+    FUN = .wp_tokenize_single_string,
     vocab = vocab,
     unk_token = unk_token,
     max_chars = max_chars
@@ -76,9 +76,9 @@ wordpiece_tokenize <- function(text,
                                        unk_token,
                                        max_chars) {
   token_vector <- unlist(
-    purrr::map(
-      words,
-      .f = .wp_tokenize_word,
+    lapply(
+      X = words,
+      FUN = .wp_tokenize_word,
       vocab = vocab,
       unk_token = unk_token,
       max_chars = max_chars
