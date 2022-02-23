@@ -1,7 +1,7 @@
 Package: wordpiece
 Type: Package
 Title: R Implementation of Wordpiece Tokenization
-Version: 2.1.1
+Version: 2.1.2
 Authors@R: c(
     person(given = "Jonathan",
            family = "Bratt",
@@ -31,7 +31,6 @@ Imports:
     fastmatch (>= 1.1),
     memoise (>= 2.0.0),
     piecemaker (>= 1.0.0),
-    purrr (>= 0.2.3),
     rlang,
     stringi (>= 1.0),
     wordpiece.data (>= 1.0.2)
